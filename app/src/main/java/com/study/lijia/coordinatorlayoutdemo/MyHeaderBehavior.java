@@ -12,7 +12,7 @@ import android.view.View;
  * Created by lijia on 17-3-31.
  */
 
-public class HeaderBehavior extends CoordinatorLayout.Behavior<LinearLayoutWithFling> {
+public class MyHeaderBehavior extends CoordinatorLayout.Behavior<LinearLayoutWithFling> {
 
     private View childA;    // Header A
     private View childB;    // Header B
@@ -20,7 +20,7 @@ public class HeaderBehavior extends CoordinatorLayout.Behavior<LinearLayoutWithF
     private int childAHeight;
     private int childBHeight;
 
-    public HeaderBehavior(Context context, AttributeSet attrs) {
+    public MyHeaderBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
