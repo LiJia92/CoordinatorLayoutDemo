@@ -5,14 +5,14 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 
 /**
  * Created by lijia on 17-3-31.
  */
 
-public class HeaderBehavior extends CoordinatorLayout.Behavior<View> {
+public class HeaderBehavior extends CoordinatorLayout.Behavior<LinearLayoutWithFling> {
 
     private View childA;    // Header A
     private View childB;    // Header B
@@ -25,12 +25,11 @@ public class HeaderBehavior extends CoordinatorLayout.Behavior<View> {
     }
 
     @Override
-    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, View child, View directTargetChild, View target, int nestedScrollAxes) {
-        if (child instanceof LinearLayout) {
-            LinearLayout dependent = (LinearLayout) child;
-            if (dependent.getChildCount() == 2) {
-                childA = dependent.getChildAt(0);
-                childB = dependent.getChildAt(1);
+    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, LinearLayoutWithFling child, View directTargetChild, View target, int nestedScrollAxes) {
+        if (child != null) {
+            if (child.getChildCount() == 2) {
+                childA = child.getChildAt(0);
+                childB = child.getChildAt(1);
                 childAHeight = childA.getHeight();
                 childBHeight = childB.getHeight();
             }
@@ -39,9 +38,9 @@ public class HeaderBehavior extends CoordinatorLayout.Behavior<View> {
     }
 
     @Override
-    public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, View child, View target, int dx, int dy, int[] consumed) {
+    public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, LinearLayoutWithFling child, View target, int dx, int dy, int[] consumed) {
         if (dy > 0) { //表示向上滚动
-            float trY = child.getY() - dy <= -childAHeight ? -childAHeight : child.getTranslationY() - dy;
+            float trY = child.getY() - dy <= -childAHeight ? -childAHeight : (int) (child.getY() - dy);
             child.setY(trY);
             child.setTag(dy);
         } else if (dy < 0) { //向下滚动
@@ -60,15 +59,44 @@ public class HeaderBehavior extends CoordinatorLayout.Behavior<View> {
         }
     }
 
+    @Override
+    public boolean onNestedPreFling(CoordinatorLayout coordinatorLayout, LinearLayoutWithFling child, View target, float velocityX, float velocityY) {
+        Log.e("TAG", "onNestedPreFling:" + velocityY);
+        if (target instanceof RecyclerView) {
+            int scrollY = getScrollY((RecyclerView) target);
+            if (velocityY < 0 && scrollY == 0) {
+                child.fling((int) velocityY);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+//
 //    @Override
-//    public boolean onNestedPreFling(CoordinatorLayout coordinatorLayout, View child, View target, float velocityX, float velocityY) {
-//        ((NestedScrollView) child).fling((int)velocityY);
-//        return true;
+//    public boolean onNestedFling(CoordinatorLayout coordinatorLayout, LinearLayoutWithFling child, View target, float velocityX, float velocityY, boolean consumed) {
+//        Log.e("TAG", "onNestedFling:" + velocityY);
+//        return false;
+//    }
+//
+//    @Override
+//    public void onStopNestedScroll(CoordinatorLayout coordinatorLayout, LinearLayoutWithFling child, View target) {
+//        Log.e("TAG", "onStopNestedScroll");
+//    }
+//
+//    @Override
+//    public void onNestedScroll(CoordinatorLayout coordinatorLayout, LinearLayoutWithFling child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
+//        Log.e("TAG", "onNestedScroll dyConsumed:" + dyConsumed + " dyUnconsumed:" + dyUnconsumed);
+//    }
+//
+//    @Override
+//    public void onNestedScrollAccepted(CoordinatorLayout coordinatorLayout, LinearLayoutWithFling child, View directTargetChild, View target, int nestedScrollAxes) {
+//        Log.e("TAG", "onNestedScrollAccepted");
 //    }
 
     private int getScrollY(RecyclerView target) {
-        RecyclerView recyclerView = target;
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        LinearLayoutManager layoutManager = (LinearLayoutManager) target.getLayoutManager();
         int position = layoutManager.findFirstVisibleItemPosition();
         View firstVisiableChildView = layoutManager.findViewByPosition(position);
         int itemHeight = firstVisiableChildView.getHeight();

@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_behavior"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler"
+    <com.study.lijia.coordinatorlayoutdemo.StickyNavLayout
+        android:id="@+id/activity_behavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorAccent"
-        app:layout_behavior="com.study.lijia.coordinatorlayoutdemo.RecyclerBehavior" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_behavior="com.study.lijia.coordinatorlayoutdemo.HeaderBehavior">
+        android:layout_height="match_parent">
 
         <TextView
             android:layout_width="match_parent"
@@ -34,6 +24,12 @@
             android:text="Header B"
             android:textSize="16sp" />
 
-    </LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorAccent" />
 
-</android.support.design.widget.CoordinatorLayout>
+    </com.study.lijia.coordinatorlayoutdemo.StickyNavLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

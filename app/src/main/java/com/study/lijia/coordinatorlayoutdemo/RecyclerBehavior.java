@@ -42,7 +42,7 @@ public class RecyclerBehavior extends CoordinatorLayout.Behavior<RecyclerView> {
 
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, RecyclerView child, View dependency) {
-        int y = (int) (dependency.getY() + dependency.getBottom());
+        float y = dependency.getY() + dependency.getBottom();
         Log.e("TAG", "y:" + y);
         int z;
         if (y > childBHeight) {
